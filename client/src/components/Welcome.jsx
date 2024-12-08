@@ -121,13 +121,13 @@ const Welcome = () => {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
+          {currentAccount && (<div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
             <div className={`rounded-tl-2xl ${companyCommonStyles}`}>
               Name
             </div>
             <div className={`sm:rounded-tr-2xl ${companyCommonStyles}`}>Address</div>
             <div >
-              
+
             </div>
             {/* <div className={`sm:rounded-bl-2xl ${companyCommonStyles}`}>
               Web 3.0
@@ -135,17 +135,17 @@ const Welcome = () => {
             <div className={companyCommonStyles}>Shrujal</div>
             <div className={companyCommonStyles}>0x651...B6F</div>
             <div >
-              
+
             </div>
             <div className={`sm:rounded-bl-2xl ${companyCommonStyles}`}>
-            Lokesh
+              Lokesh
             </div>
             {/* <div className={companyCommonStyles}>Low Fees</div> */}
             <div className={`rounded-br-2xl ${companyCommonStyles}`}>
-            0x97B....3f
+              0x97B....3f
             </div>
-          </div>
-          
+          </div>)}
+
         </div>
 
         <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10">
