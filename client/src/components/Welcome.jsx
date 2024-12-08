@@ -25,7 +25,8 @@ const Welcome = () => {
 
   const [dynamicRecipients, setDynamicRecipients] = useState({});
   const [newRecipient, setNewRecipient] = useState({ name: "", address: "" });
-  const [showAddForm, setShowAddForm] = useState(false); // Manage form visibility
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [error, setError] = useState(""); // Error state
 
   const handleSubmit = (e) => {
     const { addressTo, amount, keyword, message } = formData;
@@ -41,8 +42,7 @@ const Welcome = () => {
     let value = e.target.value;
 
     if (name === "addressTo") {
-      // Check if the entered name exists in the dynamicRecipients map
-      value = dynamicRecipients[value] || ""; // Default to an empty string if not found
+      value = dynamicRecipients[value] || ""; // Default to an empty string if name not found
     }
 
     handleChange({ target: { value } }, name);
@@ -53,18 +53,25 @@ const Welcome = () => {
 
     const { name, address } = newRecipient;
 
+    // Check for errors
     if (!name || !address) {
-      alert("Please enter both a name and an address.");
+      setError("Both name and address are required.");
+      return;
+    }
+    if (dynamicRecipients[name]) {
+      setError(`The recipient name "${name}" is already added.`);
       return;
     }
 
+    // Add recipient to the list
     setDynamicRecipients((prev) => ({
       ...prev,
       [name]: address,
     }));
 
-    setNewRecipient({ name: "", address: "" }); // Clear the form
-    setShowAddForm(false); // Hide the form after adding
+    setNewRecipient({ name: "", address: "" }); // Clear form
+    setError(""); // Clear errors
+    setShowAddForm(false); // Hide form after adding
   };
 
   const handleNewRecipientChange = (e, field) => {
@@ -113,6 +120,32 @@ const Welcome = () => {
               Blockchain
             </div>
           </div>
+
+          <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
+            <div className={`rounded-tl-2xl ${companyCommonStyles}`}>
+              Name
+            </div>
+            <div className={`sm:rounded-tr-2xl ${companyCommonStyles}`}>Address</div>
+            <div >
+              
+            </div>
+            {/* <div className={`sm:rounded-bl-2xl ${companyCommonStyles}`}>
+              Web 3.0
+            </div> */}
+            <div className={companyCommonStyles}>Shrujal</div>
+            <div className={companyCommonStyles}>0x651...B6F</div>
+            <div >
+              
+            </div>
+            <div className={`sm:rounded-bl-2xl ${companyCommonStyles}`}>
+            Lokesh
+            </div>
+            {/* <div className={companyCommonStyles}>Low Fees</div> */}
+            <div className={`rounded-br-2xl ${companyCommonStyles}`}>
+            0x97B....3f
+            </div>
+          </div>
+          
         </div>
 
         <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10">
@@ -134,63 +167,67 @@ const Welcome = () => {
               </div>
             </div>
           </div>
-          <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
-            <Input placeholder="Recipient Name" name="addressTo" type="text" handleChange={handleCustomChange} />
-            <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
-            <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={handleChange} />
-            <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
+          {currentAccount && (
+            <>
+              <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
+                <Input placeholder="Recipient Name" name="addressTo" type="text" handleChange={handleCustomChange} />
+                <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
+                <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={handleChange} />
+                <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
 
-            <div className="h-[1px] w-full bg-gray-400 my-2" />
+                <div className="h-[1px] w-full bg-gray-400 my-2" />
 
-            {isLoading
-              ? <Loader />
-              : (
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-                >
-                  Send now
-                </button>
-              )}
-          </div>
-          
-          {/* Add Recipient Button */}
-          <button
-            type="button"
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="text-white mt-5 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-          >
-            {showAddForm ? "Hide Form" : "Add Recipient"}
-          </button>
+                {isLoading
+                  ? <Loader />
+                  : (
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                    >
+                      Send now
+                    </button>
+                  )}
+              </div>
 
-          {/* Add Recipient Form (Visible on Button Click) */}
-          {showAddForm && (
-            <div className="p-5 sm:w-96 w-full mt-10 flex flex-col justify-start items-center blue-glassmorphism">
-              <h2 className="text-white text-lg font-semibold">Add New Recipient</h2>
-              <Input
-                placeholder="Recipient Name"
-                name="newRecipientName"
-                type="text"
-                value={newRecipient.name}
-                handleChange={(e) => handleNewRecipientChange(e, "name")}
-              />
-              <Input
-                placeholder="Recipient Address"
-                name="newRecipientAddress"
-                type="text"
-                value={newRecipient.address}
-                handleChange={(e) => handleNewRecipientChange(e, "address")}
-              />
+              {/* Add Recipient Button */}
               <button
                 type="button"
-                onClick={handleAddRecipient}
-                className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="text-white mt-5 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
               >
-                Add Recipient
+                {showAddForm ? "Hide Form" : "Add Recipient"}
               </button>
-            </div>
-          )}
+
+              {/* Add Recipient Form (Visible on Button Click) */}
+              {showAddForm && (
+                <div className="p-5 sm:w-96 w-full mt-10 flex flex-col justify-start items-center blue-glassmorphism">
+                  <h2 className="text-white text-lg font-semibold">Add New Recipient</h2>
+                  {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+                  <Input
+                    placeholder="Recipient Name"
+                    name="newRecipientName"
+                    type="text"
+                    value={newRecipient.name}
+                    handleChange={(e) => handleNewRecipientChange(e, "name")}
+                  />
+                  <Input
+                    placeholder="Recipient Address"
+                    name="newRecipientAddress"
+                    type="text"
+                    value={newRecipient.address}
+                    handleChange={(e) => handleNewRecipientChange(e, "address")}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddRecipient}
+                    className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                  >
+                    Add Recipient
+                  </button>
+                </div>
+              )}
+            </>)}
         </div>
       </div>
     </div>

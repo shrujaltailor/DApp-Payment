@@ -23,8 +23,6 @@ export const TransactionsProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
 
   const handleChange = (e, name) => {
-    console.log("Name ---->>>>>>>" + [name]);
-    console.log("e --->>>>" + e.target.value)
     setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
 
